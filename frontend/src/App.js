@@ -28,6 +28,8 @@ class App extends Component {
         this.handleChangeUserName = this.handleChangeUserName.bind(this);
         this.handleMainVideoStream = this.handleMainVideoStream.bind(this);
         this.onbeforeunload = this.onbeforeunload.bind(this);
+        this.toggleCamera = this.toggleCamera.bind(this);
+        this.toggleAudio = this.toggleAudio.bind(this);
     }
 
     componentDidMount() {
@@ -220,6 +222,50 @@ class App extends Component {
             console.error(e);
         }
     }
+    async toggleCamera(){
+        try {
+            const isVideoPublished = this.state.publisher.stream.videoActive; // Sprawdzenie, czy kamera jest włączona
+    
+            // Wyłączanie lub włączanie kamery
+            if (isVideoPublished) {
+                // Kamera jest włączona, wyłącz wideo
+                await this.state.publisher.publishVideo(false);
+            } else {
+                // Kamera jest wyłączona, włącz wideo
+                await this.state.publisher.publishVideo(true);
+            }
+    
+            // Zaktualizowanie stanu, aby interfejs wiedział, czy kamera jest aktywna
+            this.setState({
+                publisher: this.state.publisher
+            });
+    
+        } catch (error) {
+            console.error("Błąd podczas przełączania kamery:", error);
+        }
+    }
+    async toggleAudio(){
+        try {
+            const isAudioPublished = this.state.publisher.stream.audioActive; // Sprawdzenie, czy kamera jest włączona
+    
+            // Wyłączanie lub włączanie kamery
+            if (isAudioPublished) {
+                // Kamera jest włączona, wyłącz wideo
+                await this.state.publisher.publishAudio(false);
+            } else {
+                // Kamera jest wyłączona, włącz wideo
+                await this.state.publisher.publishAudio(true);
+            }
+    
+            // Zaktualizowanie stanu, aby interfejs wiedział, czy kamera jest aktywna
+            this.setState({
+                publisher: this.state.publisher
+            });
+    
+        } catch (error) {
+            console.error("Błąd podczas przełączania kamery:", error);
+        }
+    }
 
     render() {
         const mySessionId = this.state.mySessionId;
@@ -283,6 +329,20 @@ class App extends Component {
                                 onClick={this.switchCamera}
                                 value="Switch Camera"
                             />
+                            <input
+                                className='btn btn-large'
+                                type='button'
+                                id='buttonToggleCamera'
+                                onClick={this.toggleCamera}
+                                value="Toggle Camera"
+                            />
+                             <input
+                                className='btn btn-large'
+                                type='button'
+                                id='buttonToggleAudio'
+                                onClick={this.toggleAudio}
+                                value="Toggle Audio"
+                            />
                         </div>
 
                         {this.state.mainStreamManager !== undefined ? (
@@ -305,6 +365,7 @@ class App extends Component {
                                 </div>
                             ))}
                         </div>
+                       
                     </div>
                 ) : null}
             </div>
